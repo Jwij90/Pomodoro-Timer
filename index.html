@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Timer</title>
+  <link rel="stylesheet" href="css/timer-style.css">
+  <link rel="icon" type="image/x-icon" href="images/fav.png">
+  <link rel="stylesheet" href="css/header_footer.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="heading">
+        <h2>Focus with pomodoro</h2>
+      </div>
+      <div class="topnav">
+        <a href="#About us">About us</a>
+        <a href="#Pomodoro Timer">Pomodoro Timer</a>
+        <a href="#to do">To-Do-List</a>
+        <a class="active" href="Home.php">Home</a>
+      </div>
+    </div>
+
+    <div id="pomodoro-app">
+      <div id="contain-app">
+        <div id="timer">
+          <div id="time">
+            <span id="minutes">25</span>
+            <span id="colon">:</span>
+            <span id="seconds">00</span>
+          </div>
+          <div id="filler"></div>
+        </div>
+
+        <div id="buttons">
+          <button id="work">Work</button>
+          <button id="shortBreak">Short Break</button>
+          <button id="longBreak">Long Break</button>
+          <button id="stop">Stop</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <div class="">
+        <h1 class="title">
+          An online Pomodoro Timer to boost your productivity
+        </h1>
+      </div>
+      <div class="">
+        <h2>What is Pomodoro Timer?</h2>
+        <p>This gives a customizable timer that works on desktop browser.
+          The aim of this app is to help you focus on any task you are working on, such as study, writing, or coding.
+          This app is inspired by Pomodoro Technique which is a time management method developed by Francesco Cirillo.</p>
+      </div>
+      <div class="">
+        <h2>What is Pomodoro Technique?</h2>
+        <p>The Pomodoro Technique is created by Francesco Cirillo for a more productive way to work and study. The technique uses a timer to break down work into intervals,
+          traditionally 25 minutes in length, separated by short breaks. Each interval is known as a pomodoro,
+          from the Italian word for 'tomato', after the tomato-shaped kitchen timer that Cirillo used as a university student. - Wikipedia</p>
+      </div>
+      <div class="">
+        <h2>How to use the Pomodoro Timer?</h2>
+        <ol>
+          <li><strong>Add tasks</strong> to work on today</li>
+          <li><strong>Set estimate pomodoros</strong> (1 = 25 min of work) for each tasks</li>
+          <li><strong>Select a task</strong> to work on</li>
+          <li><strong>Start timer</strong> and focus on the task for 25 minutes</li>
+          <li><strong>Take a break</strong> for 5 minutes when the alarm ring</li>
+          <li><strong>Iterate</strong> 3-5 until you finish the tasks</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-a">
+        <a class="footer-nav" href="Contact_us.html">Contact Us</a>
+        <a class="footer-nav" href="#">Facebook</a>
+        <a class="footer-nav" href="#">Twitter</a>
+      </div>
+    </div>
+
+  </div>
+  <script type="text/javascript">
+    var pomodoro = {
+      started: false,
+      minutes: 0,
+      seconds: 0,
+      fillerHeight: 0,
+      fillerIncrement: 0,
+      interval: null,
+      minutesDom: null,
+      secondsDom: null,
+      fillerDom: null,
+      init: function() {
+        var self = this;
+        this.minutesDom = document.querySelector('#minutes');
+        this.secondsDom = document.querySelector('#seconds');
+        this.fillerDom = document.querySelector('#filler');
+        this.interval = setInterval(function() {
+          self.intervalCallback.apply(self);
+        }, 1000);
+        document.querySelector('#work').onclick = function() {
+          self.startWork.apply(self);
+        };
+        document.querySelector('#shortBreak').onclick = function() {
+          self.startShortBreak.apply(self);
+        };
+        document.querySelector('#longBreak').onclick = function() {
+          self.startLongBreak.apply(self);
+        };
+        document.querySelector('#stop').onclick = function() {
+          self.stopTimer.apply(self);
+        };
+      },
+      resetVariables: function(mins, secs, started) {
+        this.minutes = mins;
+        this.seconds = secs;
+        this.started = started;
+        this.fillerIncrement = 200 / (this.minutes * 60);
+        this.fillerHeight = 0;
+      },
+      startWork: function() {
+        this.resetVariables(25, 0, true);
+      },
+      startShortBreak: function() {
+        this.resetVariables(5, 0, true);
+      },
+      startLongBreak: function() {
+        this.resetVariables(15, 0, true);
+      },
+      stopTimer: function() {
+        this.resetVariables(25, 0, false);
+        this.updateDom();
+      },
+      toDoubleDigit: function(num) {
+        if (num < 10) {
+          return "0" + parseInt(num, 10);
+        }
+        return num;
+      },
+      updateDom: function() {
+        this.minutesDom.innerHTML = this.toDoubleDigit(this.minutes);
+        this.secondsDom.innerHTML = this.toDoubleDigit(this.seconds);
+        this.fillerHeight = this.fillerHeight + this.fillerIncrement;
+        this.fillerDom.style.height = this.fillerHeight + 'px';
+      },
+      intervalCallback: function() {
+        if (!this.started) return false;
+        if (this.seconds == 0) {
+          if (this.minutes == 0) {
+            this.timerComplete();
+            return;
+          }
+          this.seconds = 59;
+          this.minutes--;
+        } else {
+          this.seconds--;
+        }
+        this.updateDom();
+      },
+      timerComplete: function() {
+        this.started = false;
+        this.fillerHeight = 0;
+      }
+    };
+    window.onload = function() {
+      pomodoro.init();
+    };
+  </script>
+</body>
+
+</html>
